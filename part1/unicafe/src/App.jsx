@@ -9,14 +9,16 @@ const Statistics = (props) => {
       <h1>statistics</h1>
       {
         props.all === 0 ? "No feedback given" : 
-          <p>
-            good {props.good} <br/>
-            neutral {props.neutral} <br/>
-            bad {props.bad} <br/>
-            all {props.all} <br/>
-            average {average} <br/>
-            positive {positive} %
-          </p>
+          <table>
+            <tbody>
+              <tr><td>good {props.good}</td></tr>
+              <tr><td>neutral {props.neutral}</td></tr>
+              <tr><td>bad {props.bad}</td></tr>
+              <tr><td>all {props.all}</td></tr>
+              <tr><td>average {average}</td></tr>
+              <tr><td>positive {positive} %</td></tr>
+            </tbody>
+          </table>
       }
     </div>
   )
