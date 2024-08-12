@@ -1,4 +1,7 @@
 const Course = ({ course }) => {
+  let sum = 0
+  course.parts.map(part => sum += part.exercises)
+
   return (
     <div>
       <h1>{course.name}</h1>
@@ -7,6 +10,7 @@ const Course = ({ course }) => {
           {part.name} {part.exercises}
         </p>
       )}
+      <p><b>total of {sum} exercises</b></p>
     </div>
   )
 }
@@ -30,6 +34,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
       }
     ]
   }
