@@ -42,6 +42,19 @@ const App = () => {
     }
   }
 
+  const deleteNumber = id => {
+    const person = persons.find(p => p.id === id)
+    const personId = person.id
+
+    if (window.confirm(`Do you want to delete ${person.name}`)) {
+      personService
+        .remove(personId)
+        .then(returnedPersons => {
+          setPersons((persons.filter(p => p.id !== returnedPersons.id)))
+        })
+    }
+  }
+
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
@@ -67,7 +80,9 @@ const App = () => {
         handleNumberChange={handleNumberChange} 
       />
       <h2>Numbers</h2>
-      <Persons persons={persons} filterName={filterName} />
+      {persons.map(person =>
+        <Persons key={person.id} person={person} filterName={filterName} deleteNumber={() => deleteNumber(person.id)} />
+      )}
     </div>
   )
 }
