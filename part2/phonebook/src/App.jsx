@@ -25,7 +25,19 @@ const App = () => {
     event.preventDefault()
     const checkDuplicate = persons.find((person) => person.name.toUpperCase() === newName.toUpperCase())
     if(checkDuplicate) {
-      alert(`${newName} is already added to phonebook`)
+      if(checkDuplicate.number === newNumber) {
+        alert(`${newName} is already added to phonebook`)
+      }
+      else {
+        if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+          const changedNumber = { ...checkDuplicate, number: newNumber}
+          personService
+            .update(checkDuplicate.id, changedNumber)
+            .then(returnedPerson => {
+              setPersons(persons.map(person => person.id !== checkDuplicate.id ? person : returnedPerson))
+            }) 
+        }
+      }
     }
     else {
       const personObject = {
