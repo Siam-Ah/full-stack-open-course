@@ -11,7 +11,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterName, setFilterName] = useState('')
-  const [addedMessage, setAddedMessage] = useState('')
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
     console.log("effect")
@@ -39,10 +39,17 @@ const App = () => {
               setPersons(persons.map(person => person.id !== checkDuplicate.id ? person : returnedPerson))
             }) 
 
-            setAddedMessage(`Updated ${newName}`)
+            .catch(error => {
+              setMessage(`Information of ${newName} has already been removed from server`)
+              setTimeout(() => {
+                setMessage(null)
+              }, 5000)
+            }) 
+
+            setMessage(`Updated ${newName}`)
 
             setTimeout(() => {
-              setAddedMessage(null)
+              setMessage(null)
             }, 5000)
             setNewName('')
         }
@@ -54,10 +61,10 @@ const App = () => {
         number: newNumber
       }
 
-      setAddedMessage(`Added ${newName}`)
+      setMessage(`Added ${newName}`)
 
       setTimeout(() => {
-        setAddedMessage(null)
+        setMessage(null)
       }, 5000)
 
       personService
@@ -97,7 +104,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={addedMessage} />
+      <Notification message={message} />
       <Filter filterName={filterName} handleFilterChange={handleFilterChange} />
       <h2>add a new</h2>
       <PersonForm 
