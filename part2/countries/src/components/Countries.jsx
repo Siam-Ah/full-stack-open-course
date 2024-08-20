@@ -1,11 +1,16 @@
-import { useState } from 'react'
+import { useEffect } from "react"
 
 export default function Countries(props) {
-    const [selectedCountry, setSelectedCountry] = useState(null)
 
     const filteredCountries = props.countries.filter(
         country => country.name.common.toUpperCase().includes(props.countryName.toUpperCase())
     )
+
+    useEffect(() => {
+      if (filteredCountries.length === 1) {
+        props.setSelectedCountry(filteredCountries[0])
+      }
+    }, [filteredCountries, props])
 
     return (
         <div>
@@ -19,7 +24,7 @@ export default function Countries(props) {
                       {filteredCountries.map((country) => (
                         <div key={country.cca3}>
                           {country.name.common}
-                          <button onClick={() => setSelectedCountry(country)}>show</button>
+                          <button onClick={() => props.setSelectedCountry(country)}>show</button>
                         </div>
                       ))}
                     </div>
@@ -30,7 +35,7 @@ export default function Countries(props) {
               </div>
             ) : null}
 
-            {selectedCountry && <CountryInfo country={selectedCountry} />}
+            {props.selectedCountry && filteredCountries.length > 1 && <CountryInfo country={props.selectedCountry} />}
         </div>
           
     )
