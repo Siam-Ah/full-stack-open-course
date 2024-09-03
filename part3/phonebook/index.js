@@ -18,6 +18,8 @@ app.use(morgan((tokens, req, res) => {
 
 app.use(cors())
 
+app.use(express.static('dist'))
+
 let persons = 
     [
         { 
