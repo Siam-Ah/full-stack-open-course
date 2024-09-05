@@ -1,5 +1,7 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
+const Person = require('./models/person')
 const morgan = require('morgan')
 const cors = require('cors')
 
@@ -45,10 +47,12 @@ let persons =
     ]
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(people => {
+        response.json(people)
+    })
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
@@ -62,14 +66,17 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    const person = persons.find(person => person.id === id)
-
-    if (person) {
+    Person.findById(request.params.id).then(person => {
         response.json(person)
-    } else {
-        response.status(404).end()
-    }
+    })
+    // const id = request.params.id
+    // const person = persons.find(person => person.id === id)
+
+    // if (person) {
+    //     response.json(person)
+    // } else {
+    //     response.status(404).end()
+    // }
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -95,20 +102,32 @@ app.post('/api/persons', (request, response) => {
         })
     }
 
-    const nameExists = persons.some(person => person.name === body.name)
-
-    if (nameExists) {
-        return response.status(400).json({
-            error: 'name must be unique'
+    // const nameExists = persons.some(person => person.name === body.name)
+    Person.findOne({ name: body.name })
+    .then(nameExists => {
+        if (nameExists) {
+            return response.status(400).json({
+                error: 'name must be unique'
+            })
+        }
+        
+        const person = new Person({
+            name: body.name,
+            number: body.number
         })
-    }
 
-    const person = {
-        id: generateId(),
-        name: body.name,
-        number: body.number
-    }
+        person.save()
+            .then(savedPerson => {
+                response.json(savedPerson)
+            })
+            .catch(error => {
+                response.status(500).json({ error: 'saving person failed' })
+            })
+    })
+    .catch(error => {
+        response.status(500).json({ error: 'server error' })
+    })
 
-    persons = persons.concat(person)
-    response.json(person)
+    // persons = persons.concat(person)
+    // response.json(person)
 })
