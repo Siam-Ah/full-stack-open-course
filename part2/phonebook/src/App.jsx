@@ -12,6 +12,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterName, setFilterName] = useState('')
   const [message, setMessage] = useState('')
+  const [isError, setIsError] = useState(false)
 
   useEffect(() => {
     console.log("effect")
@@ -61,10 +62,9 @@ const App = () => {
         number: newNumber
       }
 
-      setMessage(`Added ${newName}`)
-
       setTimeout(() => {
         setMessage(null)
+        setIsError(false)
       }, 5000)
 
       personService
@@ -72,6 +72,11 @@ const App = () => {
         .then(returnedPersons => {
           setPersons(persons.concat(returnedPersons))
           setNewName('')
+          setMessage(`Added ${newName}`)
+        })
+        .catch(error => {
+          setMessage(error.response.data.error)
+          setIsError(true)
         })
     }
   }
@@ -104,7 +109,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message} />
+      <Notification message={message} isError={isError} />
       <Filter filterName={filterName} handleFilterChange={handleFilterChange} />
       <h2>add a new</h2>
       <PersonForm 
