@@ -57,12 +57,16 @@ app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
 
-app.get('/info', (request, response) => {
-    let body = `
-        <p>Phonebook has info for ${persons.length} people</p>
-        <p>${new Date()}</p>
-    `
-    response.send(body)
+app.get('/info', (request, response, next) => {
+    Person.countDocuments({})
+        .then(count => {
+            let body = `
+            <p>Phonebook has info for ${count} people</p>
+            <p>${new Date()}</p>
+            `
+        response.send(body)
+        })
+        .catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
